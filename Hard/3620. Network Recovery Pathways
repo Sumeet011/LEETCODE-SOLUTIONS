@@ -1,0 +1,26 @@
+class Solution {
+public:
+int findMaxPathScore(vector<vector<int>>& edges, vector<bool>& online, long long k) {
+    vector<map<long long, long long>> m(online.size());
+    vector<vector<array<long long, 2>>> al(online.size());
+    for (const auto &e : edges)
+        if (online[e[0]] && online[e[1]])
+            al[e[0]].push_back({e[1], e[2]});
+    priority_queue<array<long long, 3>> pq;
+    pq.push({INT_MAX, 0, 0});
+    while (!pq.empty() && pq.top()[2] != online.size() - 1) {
+        auto [score, path, i] = pq.top(); pq.pop();
+        for (auto [j, cost] : al[i])
+            if (auto s = min(cost, score), p = path + cost; p <= k) {
+                auto it = m[j].insert({s, p}).first;
+                while (it != begin(m[j]) && prev(it)->second >= it->second)
+                    m[j].erase(prev(it));
+                if (next(it) == end(m[j]) || next(it)->second > it->second)
+                    pq.push({s, p, j});
+                else
+                    m[j].erase(it);
+            }
+    }
+    return pq.empty() ? -1 : pq.top()[0];
+}
+};
