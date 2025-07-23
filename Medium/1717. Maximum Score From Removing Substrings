@@ -1,0 +1,49 @@
+Question : You are given a string s and two integers x and y. You can perform two types of operations any number of times.
+Remove substring "ab" and gain x points.For example, when removing "ab" from "cabxbae" it becomes "cxbae".
+Remove substring "ba" and gain y points. For example, when removing "ba" from "cabxbae" it becomes "cabxe".
+Return the maximum points you can gain after applying the above operations on s.
+
+Solution : class Solution {
+public:
+    int maximumGain(std::string s, int x, int y) {
+        int totalPoints = 0;
+        std::string firstPair;
+        int firstPoints;
+        std::string secondPair;
+        int secondPoints;
+
+        if (x >= y) {
+            firstPair = "ab";
+            firstPoints = x;
+            secondPair = "ba";
+            secondPoints = y;
+        } else {
+            firstPair = "ba";
+            firstPoints = y;
+            secondPair = "ab";
+            secondPoints = x;
+        }
+
+        std::string tempStack; 
+        for (char ch : s) {
+            if (!tempStack.empty() && tempStack.back() == firstPair[0] && ch == firstPair[1]) {
+                tempStack.pop_back();
+                totalPoints += firstPoints;
+            } else {
+                tempStack.push_back(ch);
+            }
+        }
+
+        std::string finalStack; 
+        for (char ch : tempStack) {
+            if (!finalStack.empty() && finalStack.back() == secondPair[0] && ch == secondPair[1]) {
+                finalStack.pop_back();
+                totalPoints += secondPoints;
+            } else {
+                finalStack.push_back(ch);
+            }
+        }
+
+        return totalPoints;
+    }
+};
