@@ -1,0 +1,49 @@
+class Solution:
+    def removeStones(self, stones: List[List[int]]) -> int:
+        graph = defaultdict(list)
+        x_map = defaultdict(list)
+        y_map = defaultdict(list)
+        points = [tuple(point) for point in stones]
+        
+        # Map x and y to points
+        for x, y in points:
+            x_map[x].append((x, y))
+            y_map[y].append((x, y))
+        
+        # Build graph by connecting points with same x or y
+        for same_x in x_map.values():
+            for i in range(len(same_x)):
+                for j in range(i + 1, len(same_x)):
+                    graph[same_x[i]].append(same_x[j])
+                    graph[same_x[j]].append(same_x[i])
+        
+        for same_y in y_map.values():
+            for i in range(len(same_y)):
+                for j in range(i + 1, len(same_y)):
+                    graph[same_y[i]].append(same_y[j])
+                    graph[same_y[j]].append(same_y[i])
+        
+        visited = set()
+        ans = 0
+
+        # DFS to find connected components
+        def dfs(point):
+            stack = [point]
+            size = 0
+            while stack:
+                node = stack.pop()
+                if node in visited:
+                    continue
+                visited.add(node)
+                size += 1
+                for neighbor in graph[node]:
+                    if neighbor not in visited:
+                        stack.append(neighbor)
+            return size
+
+        for point in points:
+            if point not in visited:
+                component_size = dfs(point)
+                ans += component_size - 1
+        
+        return ans
