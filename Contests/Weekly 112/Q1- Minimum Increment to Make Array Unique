@@ -1,0 +1,14 @@
+class Solution:
+    def minIncrementForUnique(self, nums: List[int]) -> int:
+        nums.sort()
+        duplicates = []
+        ans = 0
+
+        for i in range(1, len(nums)):
+            if nums[i] <= nums[i - 1]:
+                # Duplicate found: must increase
+                move = nums[i - 1] + 1 - nums[i]
+                ans += move
+                nums[i] = nums[i - 1] + 1  # Make it unique
+
+        return ans
