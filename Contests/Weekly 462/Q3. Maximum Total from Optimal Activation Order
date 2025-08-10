@@ -1,0 +1,14 @@
+class Solution:
+    def maxTotal(self, value: List[int], limit: List[int]) -> int:
+        groups = defaultdict(list)
+        
+        # group values by their limit
+        for v, l in zip(value, limit):
+            groups[l].append(v)
+        
+        total = 0
+        for l, vals in groups.items():
+            vals.sort(reverse=True)         # sort descending
+            total += sum(vals[:l])          # take top `l` values
+        
+        return total©leetcode
