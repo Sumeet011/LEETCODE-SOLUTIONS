@@ -1,0 +1,13 @@
+class Solution:
+    def sortPermutation(self, nums: List[int]) -> int:
+        ans = -1
+        n = 0
+        for a in nums:
+            if a != n:
+                if ans == -1:
+                    ans = a
+                else:
+                    ans &= a
+            n += 1
+        return 0 if ans == -1 else ans
+©leetcode
