@@ -1,0 +1,11 @@
+class Solution:
+    def reverseSubmatrix(self, grid: List[List[int]], x: int, y: int, k: int) -> List[List[int]]:
+        end = y + k
+        half_k = k // 2
+        for i in range(half_k):
+            j = y
+            while j < end:
+                grid[x + i][j], grid[x + k - 1 - i][j] = grid[x + k - 1 - i][j], grid[x + i][j]
+                j += 1
+        return grid
+©leetcode
