@@ -1,0 +1,19 @@
+class Solution:
+    def clearStars(self, s: str) -> str:
+        s = list(s)
+        # 26 stacks, one per char
+        stacks = [[] for _ in range(26)]
+
+        for i, ch in enumerate(s):
+            if ch == '*':
+                # find the smallest char that still has something
+                for c in range(26):
+                    if stacks[c]:
+                        idx = stacks[c].pop()   # last index (largest)
+                        s[idx] = '*'           # mark as deleted
+                        break
+            else:
+                c = ord(ch) - ord('a')
+                stacks[c].append(i)  # push index
+
+        return "".join(ch for ch in s if ch != '*')
