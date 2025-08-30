@@ -1,0 +1,20 @@
+from typing import List
+
+class Solution:
+    def minimumDifference(self, nums: List[int], k: int) -> int:
+        prev = set()
+        minV = float('inf')
+        n = len(nums)
+
+        for i in range(n):
+            next_set = set()
+            for v in prev:
+                next_set.add(v | nums[i])  # bitwise OR
+            next_set.add(nums[i])
+
+            for v in next_set:
+                minV = min(minV, abs(k - v))
+
+            prev = next_set
+
+        return minV
