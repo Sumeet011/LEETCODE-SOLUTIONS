@@ -1,0 +1,85 @@
+from collections import deque
+from typing import List
+
+# --- Helper Functions ---
+def bfs_farthest(node: int, adj: List[List[int]]):
+    n = len(adj)
+    dist = [-1] * n
+    dist[node] = 0
+    q = deque([node])
+    farthest = node
+
+    while q:
+        u = q.popleft()
+        for v in adj[u]:
+            if dist[v] == -1:
+                dist[v] = dist[u] + 1
+                q.append(v)
+                if dist[v] > dist[farthest]:
+                    farthest = v
+    return farthest, dist
+
+def tree_diameter_and_center(adj: List[List[int]]):
+    # 1st BFS → find one diameter end
+    A, _ = bfs_farthest(0, adj)
+    # 2nd BFS → find other diameter end
+    B, dist_from_A = bfs_farthest(A, adj)
+    # distances from B to recover path
+    _, dist_from_B = bfs_farthest(B, adj)
+
+    diameter_len = dist_from_A[B]
+
+    # reconstruct path B→A
+    path = []
+    u = B
+    while u != -1:
+        path.append(u)
+        found = False
+        for v in adj[u]:
+            if dist_from_A[v] == dist_from_A[u] - 1:
+                u = v
+                found = True
+                break
+        if not found:
+            u = -1
+    path = path[::-1]
+
+    # find center(s)
+    m = len(path)
+    if m % 2 == 1:
+        centers = [path[m // 2]]
+    else:
+        centers = [path[m // 2 - 1], path[m // 2]]
+
+    return diameter_len, centers
+
+# --- Solution Class ---
+class Solution:
+    def minimumDiameterAfterMerge(self, edges1: List[List[int]], edges2: List[List[int]]) -> int:
+        def build_adj(n, edges):
+            adj = [[] for _ in range(n)]
+            for u, v in edges:
+                adj[u].append(v)
+                adj[v].append(u)
+            return adj
+
+        def safe_tree_size(edges):
+            if not edges:
+                return 1  # assume 1 node if no edges
+            return max(max(u, v) for u, v in edges) + 1
+
+        n1 = safe_tree_size(edges1)
+        n2 = safe_tree_size(edges2)
+
+        adj1 = build_adj(n1, edges1)
+        adj2 = build_adj(n2, edges2)
+
+        dia1, centers1 = tree_diameter_and_center(adj1) if n1 > 0 else (0, [0])
+        dia2, centers2 = tree_diameter_and_center(adj2) if n2 > 0 else (0, [0])
+
+        rad1 = (dia1 + 1) // 2
+        rad2 = (dia2 + 1) // 2
+
+        merged_dia = max(dia1, dia2, rad1 + rad2 + 1)
+        return merged_dia
+
