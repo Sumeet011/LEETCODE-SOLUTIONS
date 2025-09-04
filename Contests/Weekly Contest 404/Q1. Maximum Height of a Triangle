@@ -1,0 +1,26 @@
+class Solution:
+    def maxHeightOfTriangle(self, red: int, blue: int) -> int:
+        def canBuild(h: int, red: int, blue: int) -> bool:
+            # Sum of arithmetic sequence: n/2 * (first + last)
+            if h % 2 == 0:  # even height
+                rows = h // 2
+                need1 = rows * (2 + (rows - 1) * 2) // 2   # color 1
+                need2 = rows * (4 + (rows - 1) * 2) // 2   # color 2
+            else:  # odd height
+                rows1 = (h + 1) // 2
+                rows2 = h // 2
+                need1 = rows1 * (2 + (rows1 - 1) * 2) // 2
+                need2 = rows2 * (4 + (rows2 - 1) * 2) // 2
+
+            return (red >= need1 and blue >= need2) or (red >= need2 and blue >= need1)
+
+        Ans = 0
+        L, H = 0, 101
+        while L <= H:
+            mid = (L + H) // 2
+            if canBuild(mid, red, blue):
+                Ans = mid
+                L = mid + 1
+            else:
+                H = mid - 1
+        return Ans
