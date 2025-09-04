@@ -1,0 +1,26 @@
+class Solution:
+    def maximumLength(self, nums: List[int], k: int) -> int:
+        L = len(nums)
+        Map = defaultdict(list)
+
+        # Build groups by remainder (i < j to avoid duplicates)
+        for i in range(L):
+            for j in range(i + 1, L):
+                r = (nums[i] + nums[j]) % k
+                Map[r].append((i, j))
+        
+        def longest_chain(pairs):
+            dp = [0] * L  # dp[v] = max chain ending at index v
+            best = 0
+            for u, v in pairs:
+                dp[v] = max(dp[v], dp[u] + 1)
+                best = max(best, dp[v])
+            return best
+
+        Ans = 0
+        for rem_pairs in Map.values():  # iterate over lists of pairs
+            if len(rem_pairs) <= Ans:   # skip if cannot beat current Ans
+                continue
+            Ans = max(Ans, longest_chain(rem_pairs))
+
+        return Ans
