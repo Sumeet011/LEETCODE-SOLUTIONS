@@ -1,0 +1,32 @@
+class Solution:
+    def maximumLength(self, nums: List[int]) -> int:
+        Even = 0
+        Odd = 0
+        EO = True   # flag for Even-Odd sequence
+        EVC = 0     # count for Even-Odd sequence
+        OE = False  # flag for Odd-Even sequence
+        OEC = 0     # count for Odd-Even sequence
+
+        for a in nums:
+            if a % 2 == 0:
+                Even += 1
+            if a % 2 != 0:
+                Odd += 1
+
+            if EO and a % 2 == 0:
+                EVC += 1
+                EO = False
+            elif not EO and a % 2 != 0:
+                EO = True
+                EVC += 1
+
+            if not OE and a % 2 != 0:
+                OE = True
+                OEC += 1
+            elif OE and a % 2 == 0:
+                OE = False
+                OEC += 1
+
+        return max(Even, Odd, EVC, OEC)
+
+
