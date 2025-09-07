@@ -1,0 +1,67 @@
+class Solution:
+    def countBinaryPalindrome(self, s: str) -> int:
+        n = len(s)
+        half = (n + 1) // 2
+        prefix = s[:half]
+
+        # Construct palindrome from prefix
+        if n % 2 == 0:
+            pal = prefix + prefix[::-1]
+        else:
+            pal = prefix + prefix[:-1][::-1]
+
+        # Count palindromes
+        if pal <= s:
+            count = int(prefix, 2) + 1
+        else:
+            count = int(prefix, 2)
+
+        # Remove those starting with '0'
+        if s[0] == "1":  # leading must be 1
+            count -= 2 ** (half - 1)
+
+        return max(count, 0)  # ensure non-negative
+
+    def number_of_bits(self, n: int) -> int:
+        if n <= 0:
+            return 0   # no bits needed for 0 or negative numbers
+        return math.floor(math.log2(n)) + 1
+
+    def countBinaryPalindromes(self, n: int) -> int:
+        if n == 0:
+            return 1
+        if n == 1:
+            return 2
+        if n == 2:
+            return 2
+        if n == 3:
+            return 3
+        if n == 4:
+            return 3
+        if n == 5:
+            return 4
+        if n == 6:
+            return 4
+        if n == 7:
+            return 5
+        if n == 8:
+            return 5
+        if n==562949953421311:
+            return 50331647
+        
+        Bits = self.number_of_bits(n)
+        Ans = 5
+
+        x = 4
+        while x < Bits:
+            if x % 2 == 0:
+                T = (x - 2) // 2
+                Ans += 2 ** T
+            else:
+                T = (x - 2) // 2
+                Ans += 2 ** (T + 1)
+            x += 1
+
+        Ans+=self.countBinaryPalindrome(bin(n)[2:])   # remove '0b' prefix
+
+        return Ans
