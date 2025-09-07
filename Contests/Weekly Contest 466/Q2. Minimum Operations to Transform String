@@ -1,0 +1,16 @@
+class Solution:
+    def minOperations(self, s: str) -> int:
+        char_count = [0] * 26  # To count occurrences of each character
+        Ans=0
+        for c in s:
+            ind=ord(c) - ord('a')
+            char_count[ind] += 1  # Increment the count for the character
+        i=1
+        while i<26:
+            if i>1:
+                char_count[i]+=char_count[i-1]
+            if char_count[i]!=0:
+                Ans+=1
+            i+=1
+        return Ans
+        
