@@ -1,0 +1,31 @@
+class Solution:
+    def bowlSubarrays(self, nums):
+        n = len(nums)
+        ans = 0
+
+        # Next Greater Element to the right
+        right = [-1] * n
+        stack = []
+        for i in range(n):
+            while stack and nums[i] > nums[stack[-1]]:
+                idx = stack.pop()
+                right[idx] = i
+            stack.append(i)
+
+        # Next Greater Element to the left
+        left = [-1] * n
+        stack = []
+        for i in range(n - 1, -1, -1):
+            while stack and nums[i] > nums[stack[-1]]:
+                idx = stack.pop()
+                left[idx] = i
+            stack.append(i)
+
+        # Count valid cases
+        for i in range(n):
+            if right[i] != -1 and abs(right[i] - i) >= 2:
+                ans += 1
+            if left[i] != -1 and abs(left[i] - i) >= 2:
+                ans += 1
+
+        return ans
