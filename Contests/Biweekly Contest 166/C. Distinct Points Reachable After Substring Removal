@@ -1,0 +1,48 @@
+class Solution:
+    def distinctPoints(self, s: str, k: int) -> int:
+        FinalX = 0
+        FinalY = 0
+        
+        # Calculate the final position (not really needed for distinct points)
+        for c in s:
+            if c == 'U':
+                FinalY += 1
+            elif c == 'D':
+                FinalY -= 1
+            elif c == 'L':
+                FinalX -= 1
+            elif c == 'R':
+                FinalX += 1
+        
+        Ans = set()
+        X = 0
+        Y = 0
+        
+        # Sliding window of length k
+        for i in range(len(s)):
+            if i >= k:
+                # Remove the effect of the character leaving the window
+                if s[i - k] == 'U':
+                    Y -= 1
+                elif s[i - k] == 'D':
+                    Y += 1
+                elif s[i - k] == 'L':
+                    X += 1
+                elif s[i - k] == 'R':
+                    X -= 1
+            
+            # Add the effect of the current character
+            if s[i] == 'U':
+                Y += 1
+            elif s[i] == 'D':
+                Y -= 1
+            elif s[i] == 'L':
+                X -= 1
+            elif s[i] == 'R':
+                X += 1
+            
+            # Add the current point to the set
+            if i >= k - 1:  # only start recording after first window is complete
+                Ans.add((X, Y))
+        
+        return len(Ans)
