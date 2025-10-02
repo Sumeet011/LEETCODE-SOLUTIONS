@@ -1,0 +1,15 @@
+class Solution:
+    def climbStairs(self, n: int, costs: List[int]) -> int:
+        # dp[j] = minimum cost to reach step j
+        dp = [float('inf')] * (n + 1)
+        dp[0] = 0  # starting point
+
+        for j in range(1, n + 1):  # start from 1 because dp[0] already set
+            i = j - 1
+            C = 0
+            while i > -1 and C < 3:  # you allow at most 3 steps back
+                cost_to_step = costs[j - 1] if j - 1 < len(costs) else 0
+                dp[j] = min(dp[j], dp[i] + cost_to_step + (j - i) ** 2)
+                i -= 1
+                C += 1  # important to increment C, or infinite loop
+        return dp[n]
