@@ -1,0 +1,42 @@
+from collections import defaultdict
+
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+    
+    def union(self, x, y):
+        self.parent[self.find(x)] = self.find(y)
+
+class Solution:
+    def maxAlternatingSum(self, nums, swaps):
+        n = len(nums)
+        dsu = DSU(n)
+        
+        # Step 1: Build connected components
+        for u, v in swaps:
+            dsu.union(u, v)
+        
+        # Step 2: Group indices by root
+        groups = defaultdict(list)
+        for i in range(n):
+            groups[dsu.find(i)].append(i)
+        
+        ans = 0
+        
+        # Step 3: For each component, assign values optimally
+        for indices in groups.values():
+            values = [nums[i] for i in indices]
+            values.sort(reverse=True)   # biggest values first
+            
+            even_slots = sum(1 for i in indices if i % 2 == 0)
+            odd_slots = len(indices) - even_slots
+            
+            # largest go to evens, rest to odds
+            ans += sum(values[:even_slots]) - sum(values[even_slots:])
+        
+        return ans
