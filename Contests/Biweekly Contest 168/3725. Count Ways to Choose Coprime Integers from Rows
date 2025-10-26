@@ -1,0 +1,45 @@
+# 3725. Count Ways to Choose Coprime Integers from Rows
+
+**Difficulty:** Hard  
+**Status:** Solved  
+**Premium:** 🔒  
+**Companies:**  
+
+---
+
+## Problem
+
+You are given an `m x n` matrix `mat` of positive integers.
+
+Return an integer denoting the number of ways to choose **exactly one integer from each row** of `mat` such that the **greatest common divisor (GCD)** of all chosen integers is `1`.
+
+Since the answer may be very large, return it **modulo 10^9 + 7**.
+
+---
+
+## Solution (Python)
+
+```python
+from math import gcd
+from typing import List
+
+class Solution:
+    def countCoprime(self, mat: List[List[int]]) -> int:
+        M = 10**9 + 7
+        func = [0] * 151  # frequency of GCD values
+        
+        # Initialize with the first row
+        for x in mat[0]:
+            func[x] += 1
+        
+        # Process each subsequent row
+        for row in mat[1:]:
+            nf = [0] * 151
+            for x in row:
+                for g in range(1, 151):
+                    if func[g]:
+                        n = gcd(g, x)
+                        nf[n] = (nf[n] + func[g]) % M
+            func = nf
+        
+        return func[1] % M
