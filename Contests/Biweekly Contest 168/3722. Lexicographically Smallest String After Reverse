@@ -1,0 +1,43 @@
+# 3722. Lexicographically Smallest String After Reverse
+
+**Difficulty:** N/A  
+**Premium:** 🔒  
+**Companies:**  
+
+---
+
+## Problem
+
+You are given a string `s` of length `n` consisting of lowercase English letters.
+
+You must perform **exactly one operation** by choosing any integer `k` such that `1 <= k <= n` and either:
+
+1. Reverse the first `k` characters of `s`, or  
+2. Reverse the last `k` characters of `s`.
+
+Return the **lexicographically smallest string** that can be obtained after exactly one such operation.
+
+**Note:**  
+A string `a` is lexicographically smaller than a string `b` if, at the **first position where they differ**, `a` has a letter that appears earlier in the alphabet than the corresponding letter in `b`.  
+
+If the first `min(a.length, b.length)` characters are the same, then the **shorter string** is considered lexicographically smaller.
+
+---
+
+## Solution (Python)
+
+```python
+class Solution:
+    def lexSmallest(self, s: str) -> str:
+        N = len(s)
+        Ans = s
+        for K in range(1, N + 1):
+            # Reverse the first K characters
+            first = s[:K][::-1] + s[K:]
+            Ans = min(Ans, first)
+            
+            # Reverse the last K characters
+            second = s[:-K] + s[-K:][::-1]
+            Ans = min(Ans, second)
+            
+        return Ans
